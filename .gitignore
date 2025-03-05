@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+venv/
+env/
+ENV/
+*.egg-info/
+
+# Log files
+*.log
+
+# Database file
+*.sqlite3
+
+# Media and static files (optional, depending on your setup)
+media/
+static/
+
+# Django specific files
+*.pot
+
+# IDE-specific files
+.idea/
+*.swp
+*.swo
+*.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Distribution / packaging
+build/
+dist/
+*.tar.gz
+*.zip
+*.whl
