@@ -114,4 +114,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# This setting tells Django to use a custom user model instead of the default User model 
+# provided by Django's built-in authentication system.
 AUTH_USER_MODEL = 'api.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # fallback for the admin UI site.
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
