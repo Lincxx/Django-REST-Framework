@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'api', 
     'rest_framework',
     'silk',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -124,5 +125,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # fallback for the admin UI site.
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'E-Commerce API',
+    'DESCRIPTION': 'A simple E-Commerce API to learn Django REST Framework.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
