@@ -11,7 +11,7 @@ from rest_framework.permissions import(
     IsAdminUser, 
     AllowAny)
 from rest_framework.views import APIView
-from api.filters import ProductFilter
+from api.filters import InStockFilterBackend, ProductFilter
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -24,7 +24,8 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [
         DjangoFilterBackend, 
         filters.SearchFilter, 
-        filters.OrderingFilter
+        filters.OrderingFilter, 
+        InStockFilterBackend,
         ]
     search_fields = ['name', 'description']
     # if we want an extact match on a field we need to use =
