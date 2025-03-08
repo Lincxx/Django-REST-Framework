@@ -11,6 +11,7 @@ from rest_framework.permissions import(
     IsAdminUser, 
     AllowAny)
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from api.filters import InStockFilterBackend, ProductFilter
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -74,19 +75,28 @@ class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 #         print(request.data)
 #         return super().create(request, *args, **kwargs) 
 
-class OrderListAPIView(generics.ListCreateAPIView):
+class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.prefetch_related('items__product')
     serializer_class = OrderSerializer
+    permission_classes = [AllowAny]
+    # we can override the default pagination class
+    pagination_class = None
 
-class UserOrderListAPIView(generics.ListCreateAPIView):
-    queryset = Order.objects.prefetch_related('items__product')
-    serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        # user = self.request.user
-        qs = super().get_queryset()
-        return qs.filter(user=self.request.user)
+
+# class OrderListAPIView(generics.ListCreateAPIView):
+#     queryset = Order.objects.prefetch_related('items__product')
+#     serializer_class = OrderSerializer
+
+# class UserOrderListAPIView(generics.ListCreateAPIView):
+#     queryset = Order.objects.prefetch_related('items__product')
+#     serializer_class = OrderSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         # user = self.request.user
+#         qs = super().get_queryset()
+#         return qs.filter(user=self.request.user)
 
 
 # this is good for collecting data or retruning that data
