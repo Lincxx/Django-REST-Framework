@@ -14,10 +14,12 @@ from rest_framework.views import APIView
 from api.filters import InStockFilterBackend, ProductFilter
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
+    # queryset = Product.objects.all()
+    queryset = Product.objects.order_by('pk')
     serializer_class = ProductSerializer
     # filterset_fields = ['name', 'price']
     filterset_class = ProductFilter
@@ -31,6 +33,18 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     # if we want an extact match on a field we need to use =
     # search_fields = ['=name', 'description']
     ordering_fields = ['name', 'price', 'stock']
+
+    # we override the default page size
+    # pagination_class = PageNumberPagination
+    # pagination_class.page_size = 2
+    # pagination_class.page_query_param = 'page_num'
+    # pagination_class.page_size_query_param = 'size'
+    # pagination_class.max_page_size = 6
+
+    # offset is controlled by the settings, PAGE_SIZE
+    pagination_class = LimitOffsetPagination
+
+
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
