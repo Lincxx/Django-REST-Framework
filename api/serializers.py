@@ -36,7 +36,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    
+    order_id = serializers.UUIDField(read_only=True)
+
     #nested serializers
     items = OrderItemSerializer(many=True, read_only=True)
     total_price = serializers.SerializerMethodField()
