@@ -22,9 +22,9 @@ class Product(models.Model):
 
 class Order(models.Model):
     class StatusChoices(models.TextChoices):
-        PENDING = 'Pending'
-        CONFIRMED = 'Confirmed'
-        CANCELLED = 'Cancelled'
+        PENDING = 'pending'
+        CONFIRMED = 'confirmed'
+        CANCELLED = 'cancelled'
     
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
