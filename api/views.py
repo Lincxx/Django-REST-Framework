@@ -83,6 +83,11 @@ class OrderViewSet(viewsets.ModelViewSet):
     filterset_class = OrderFilter
     filter_backends = [DjangoFilterBackend]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if not self.request.user.is_staff:
+           qs = qs.filter(user=self.request.user)
+        return qs
     @action(
             detail=False, 
             methods=['GET'], 
