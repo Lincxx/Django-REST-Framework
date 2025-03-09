@@ -60,8 +60,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 ###  
 
-
 GET http://127.0.0.1:8000/orders?status=confirmed HTTP/1.1
+
+###
+
+GET http://127.0.0.1:8000/orders/592a6230-23b3-4cc4-8fdf-81ac61a26168 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNTQ5ODgzLCJpYXQiOjE3NDE1NDk1ODMsImp0aSI6IjVjODdjZDU5MGE5YTQyNzdhMDljZDE1NDYzMTliOWJhIiwidXNlcl9pZCI6M30.TBbCK-3J5Oc7iN7PhbOOjXuwuS3x23Toj94DOvKoPQc
 
 ###
 
