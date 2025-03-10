@@ -34,6 +34,41 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['product_name', 'product_price', 'quantity', 'item_subtotal']
         # item_subtotal comes from the OrderItem model
 
+class OrderCreateSerializer(serializers.ModelSerializer):
+    #nested serializers
+    class OrderItemSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = OrderItem
+            fields = ['product', 'quantity']
+
+    #nested serializers
+    items = OrderItemSerializer(many=True)
+    order_id = serializers.UUIDField(read_only=True)
+
+    def create(self, validated_data):
+        ordered_data = validated_data.pop('items')
+        order = Order.objects.create(**validated_data)
+
+        for item_data in ordered_data:
+            OrderItem.objects.create(order=order, **item_data)
+
+        return order
+
+    # the obj parameter is the Order instance 
+    def get_total_price(self, obj):
+        order_items = obj.items.all()
+    class Meta:
+        model = Order
+        fields = [ 
+            'order_id',
+            'user', 
+            'status', 
+            'items',
+            ]
+        extra_kwargs = {
+            'user': {'read_only': True}
+        }
+
 
 class OrderSerializer(serializers.ModelSerializer):
     order_id = serializers.UUIDField(read_only=True)
