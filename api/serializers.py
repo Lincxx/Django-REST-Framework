@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from .models import Product, Order, OrderItem
 
@@ -42,15 +43,32 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             fields = ['product', 'quantity']
 
     #nested serializers
-    items = OrderItemSerializer(many=True)
+    items = OrderItemSerializer(many=True, required=False)
     order_id = serializers.UUIDField(read_only=True)
+
+    def update(self, instance, validated_data):
+        ordered_data = validated_data.pop('items')
+
+        # atomic transaction, just in case something fails
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+
+            if ordered_data is not None:
+                # clear the existing order items
+                instance.items.all().delete()
+                # create new order items
+                for item_data in ordered_data:
+                    OrderItem.objects.create(order=instance, **item_data)
+
+        return instance
 
     def create(self, validated_data):
         ordered_data = validated_data.pop('items')
-        order = Order.objects.create(**validated_data)
+        with transaction.atomic():
+            order = Order.objects.create(**validated_data)
 
-        for item_data in ordered_data:
-            OrderItem.objects.create(order=order, **item_data)
+            for item_data in ordered_data:
+                OrderItem.objects.create(order=order, **item_data)
 
         return order
 
