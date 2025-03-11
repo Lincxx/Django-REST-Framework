@@ -1,3 +1,7 @@
+import time
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from django.db.models import Max
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -34,17 +38,16 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     # search_fields = ['=name', 'description']
     ordering_fields = ['name', 'price', 'stock']
 
-    # we override the default page size
-    # pagination_class = PageNumberPagination
-    # pagination_class.page_size = 2
-    # pagination_class.page_query_param = 'page_num'
-    # pagination_class.page_size_query_param = 'size'
-    # pagination_class.max_page_size = 6
-
     # offset is controlled by the settings, PAGE_SIZE
-    pagination_class = LimitOffsetPagination
+    pagination_class = None #LimitOffsetPagination
 
+    @method_decorator(cache_page(60 * 15, key_prefix='product_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
+    def get_queryset(self):
+        time.sleep(2)
+        return super().get_queryset()
 
     def get_permissions(self):
         self.permission_classes = [AllowAny]
