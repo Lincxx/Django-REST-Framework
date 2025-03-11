@@ -20,6 +20,8 @@ from api.models import Order, OrderItem, Product, User
 from api.serializers import (OrderSerializer, ProductInfoSerializer,
                              ProductSerializer, OrderCreateSerializer, UserSerializer)
 
+from api.tasks import send_order_confirmation_email
+
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     # queryset = Product.objects.all()
@@ -86,10 +88,15 @@ class OrderViewSet(viewsets.ModelViewSet):
     filterset_class = OrderFilter
     filter_backends = [DjangoFilterBackend]
 
-
+    @method_decorator(cache_page(60 * 15, key_prefix='order_list'))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        order = serializer.save(user=self.request.user)
+        # schedule the task
+        send_order_confirmation_email.delay(order.order_id, self.request.user.email)
+
 
     def get_serializer_class(self):
         # can also check if POST: if self.request.method == 'POST':
